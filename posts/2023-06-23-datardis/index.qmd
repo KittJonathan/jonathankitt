@@ -1,0 +1,114 @@
+---
+title: "The {datardis} package"
+subtitle: "Explore the Dr Who TV series"
+author: "Jonathan Kitt"
+date: "2023-06-23"
+toc: true
+categories: [R, package, Dr Who]
+---
+
+# Install the package
+
+<br>
+
+The {datardis} package is available on [CRAN](https://cran.r-project.org/web/packages/datardis/index.html):
+
+```{r, eval=FALSE}
+install.packages("datardis")
+```
+
+<br>
+
+# The datasets
+
+<br>
+
+As of today, the {datardis} package (version 0.0.3) contains six datasets :
+
+-   List of **Doctor Who episodes** from the revived era (since 2005)
+
+-   List of **directors** for Doctor Who episodes
+
+-   List of **writers** for Doctor Who episodes
+
+-   List of **Torchwood episodes**
+
+-   List of **directors** for Torchwood episodes
+
+-   List of **writers** for Torchwood episodes
+
+<br>
+
+## Accessing the datasets
+
+<br>
+
+To access the datasets, use the following commands:
+
+```{r, eval=FALSE}
+# Load the package
+library(datardis)
+
+# List of Dr Who episodes
+drwho_episodes
+
+# List of Dr Who directors
+drwho_directors
+
+# List of Dr Who writers
+drwho_writers
+
+# List of Torchwood episodes
+torchwood_episodes
+
+# List of Torchwood directors
+torchwood_directors
+
+# List of Torchwood writers
+torchwood_writers
+
+```
+
+<br>
+
+# Exploring the datasets
+
+<br>
+
+## List of Dr Who episodes
+
+<br>
+
+To view the dataset content, use the `glimpse()` function:
+
+```{r, eval=FALSE}
+# Load the tidyverse
+library(tidyverse)
+
+# View the dataset content
+glimpse(drwho_episodes)
+```
+
+```{r, echo=FALSE, eval=TRUE}
+dplyr::glimpse(datardis::drwho_episodes)
+```
+
+<br>
+
+## Who wrote the most Dr Who episodes?
+
+<br>
+
+To find out who wrote the most Dr Who episodes, use the following code:
+
+```{r, eval=FALSE}
+drwho_writers |> 
+  count(writer, sort = TRUE) |> 
+  head(5)
+```
+
+```{r, echo=FALSE, eval=TRUE}
+datardis::drwho_writers |> 
+  dplyr::count(writer, sort = TRUE) |> 
+  head(5)
+```

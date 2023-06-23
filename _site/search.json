@@ -1,0 +1,58 @@
+[
+  {
+    "objectID": "blog.html",
+    "href": "blog.html",
+    "title": "jonathankitt",
+    "section": "",
+    "text": "The {datardis} package\n\n\nExplore the Dr Who TV series\n\n\n\n\nR\n\n\npackage\n\n\nDr Who\n\n\n\n\n\n\n\n\n\n\n\nJun 23, 2023\n\n\nJonathan Kitt\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Welcome!",
+    "section": "",
+    "text": "Hi, I am Jonathan 👋\n\nI currently work as a technician in the Genetics, Diversity and Ecophysiology of Cereals INRAE lab in Clermont-Ferrand, France.\n\n\nMy work focuses on the characterisation of bread wheat genetic diversity.\n\n\n\nWhat you’ll find on this blog\n\n➡️ Posts about R stuff\n\n\n➡️ Posts about data visualisation"
+  },
+  {
+    "objectID": "links.html",
+    "href": "links.html",
+    "title": "Welcome!",
+    "section": "",
+    "text": "Hi, I am Jonathan 👋\n\nI currently work as a technician in the Genetics, Diversity and Ecophysiology of Cereals INRAE lab in Clermont-Ferrand, France.\n\n\nMy work focuses on the characterisation of bread wheat genetic diversity.\n\n\n\nWhat you’ll find on this blog\n\n➡️ Posts about R stuff\n\n\n➡️ Posts about data visualisation"
+  },
+  {
+    "objectID": "posts/2023-06-23-datardis/index.html",
+    "href": "posts/2023-06-23-datardis/index.html",
+    "title": "The {datardis} package",
+    "section": "",
+    "text": "The {datardis} package is available on CRAN:\n\ninstall.packages(\"datardis\")"
+  },
+  {
+    "objectID": "posts/2023-06-23-datardis/index.html#accessing-the-datasets",
+    "href": "posts/2023-06-23-datardis/index.html#accessing-the-datasets",
+    "title": "The {datardis} package",
+    "section": "Accessing the datasets",
+    "text": "Accessing the datasets\n\nTo access the datasets, use the following commands:\n\n# Load the package\nlibrary(datardis)\n\n# List of Dr Who episodes\ndrwho_episodes\n\n# List of Dr Who directors\ndrwho_directors\n\n# List of Dr Who writers\ndrwho_writers\n\n# List of Torchwood episodes\ntorchwood_episodes\n\n# List of Torchwood directors\ntorchwood_directors\n\n# List of Torchwood writers\ntorchwood_writers"
+  },
+  {
+    "objectID": "posts/2023-06-23-datardis/index.html#dataset-content",
+    "href": "posts/2023-06-23-datardis/index.html#dataset-content",
+    "title": "The {datardis} package",
+    "section": "Dataset content",
+    "text": "Dataset content\n\nTo view the dataset content, use the glimpse() function:\n\n\nRows: 175\nColumns: 12\n$ era             &lt;chr&gt; \"revived\", \"revived\", \"revived\", \"revived\", \"revived\",…\n$ season_number   &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, …\n$ serial_title    &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…\n$ story_number    &lt;chr&gt; \"157\", \"158\", \"159\", \"160a\", \"160b\", \"161\", \"162\", \"16…\n$ episode_number  &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, NA, 1, 2, 3…\n$ episode_title   &lt;chr&gt; \"Rose\", \"The End of the World\", \"The Unquiet Dead\", \"A…\n$ type            &lt;chr&gt; \"episode\", \"episode\", \"episode\", \"episode\", \"episode\",…\n$ first_aired     &lt;date&gt; 2005-03-26, 2005-04-02, 2005-04-09, 2005-04-16, 2005-…\n$ production_code &lt;chr&gt; \"1.1\", \"1.2\", \"1.3\", \"1.4\", \"1.5\", \"1.6\", \"1.7\", \"1.8\"…\n$ uk_viewers      &lt;dbl&gt; 10.81, 7.97, 8.86, 7.63, 7.98, 8.63, 8.01, 8.06, 7.11,…\n$ rating          &lt;dbl&gt; 76, 76, 80, 82, 81, 84, 81, 83, 84, 85, 82, 86, 89, 84…\n$ duration        &lt;dbl&gt; 45, 44, 44, 45, 42, 45, 44, 45, 45, 45, 45, 45, 45, 60…"
+  },
+  {
+    "objectID": "posts/2023-06-23-datardis/index.html#list-of-dr-who-episodes",
+    "href": "posts/2023-06-23-datardis/index.html#list-of-dr-who-episodes",
+    "title": "The {datardis} package",
+    "section": "List of Dr Who episodes",
+    "text": "List of Dr Who episodes\n\nTo view the dataset content, use the glimpse() function:\n\n# Load the tidyverse\nlibrary(tidyverse)\n\n# View the dataset content\nglimpse(drwho_episodes)\n\n\n\nRows: 175\nColumns: 12\n$ era             &lt;chr&gt; \"revived\", \"revived\", \"revived\", \"revived\", \"revived\",…\n$ season_number   &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, …\n$ serial_title    &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…\n$ story_number    &lt;chr&gt; \"157\", \"158\", \"159\", \"160a\", \"160b\", \"161\", \"162\", \"16…\n$ episode_number  &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, NA, 1, 2, 3…\n$ episode_title   &lt;chr&gt; \"Rose\", \"The End of the World\", \"The Unquiet Dead\", \"A…\n$ type            &lt;chr&gt; \"episode\", \"episode\", \"episode\", \"episode\", \"episode\",…\n$ first_aired     &lt;date&gt; 2005-03-26, 2005-04-02, 2005-04-09, 2005-04-16, 2005-…\n$ production_code &lt;chr&gt; \"1.1\", \"1.2\", \"1.3\", \"1.4\", \"1.5\", \"1.6\", \"1.7\", \"1.8\"…\n$ uk_viewers      &lt;dbl&gt; 10.81, 7.97, 8.86, 7.63, 7.98, 8.63, 8.01, 8.06, 7.11,…\n$ rating          &lt;dbl&gt; 76, 76, 80, 82, 81, 84, 81, 83, 84, 85, 82, 86, 89, 84…\n$ duration        &lt;dbl&gt; 45, 44, 44, 45, 42, 45, 44, 45, 45, 45, 45, 45, 45, 60…"
+  },
+  {
+    "objectID": "posts/2023-06-23-datardis/index.html#who-wrote-the-most-dr-who-episodes",
+    "href": "posts/2023-06-23-datardis/index.html#who-wrote-the-most-dr-who-episodes",
+    "title": "The {datardis} package",
+    "section": "Who wrote the most Dr Who episodes?",
+    "text": "Who wrote the most Dr Who episodes?\n\nTo find out who wrote the most Dr Who episodes, use the following code:\n\ndrwho_writers |&gt; \n  count(writer, sort = TRUE) |&gt; \n  head(5)\n\n\n\n# A tibble: 5 × 2\n  writer               n\n  &lt;chr&gt;            &lt;int&gt;\n1 Steven Moffat       45\n2 Russell T Davies    31\n3 Chris Chibnall      29\n4 Mark Gatiss          9\n5 Toby Whithouse       7"
+  }
+]

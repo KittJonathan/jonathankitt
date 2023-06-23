@@ -1,0 +1,28 @@
+project:
+  type: website
+
+website:
+  title: "Jonathan Kitt"
+  description: "My personal blog about coding with R"
+  navbar:
+    left: 
+      - icon: envelope
+        href: mailto:jonathan.kitt@proton.me
+      - icon: github
+        href: https://github.com/KittJonathan
+      - icon: twitter
+        href: https://twitter.com/KittJonathan
+      - icon: mastodon
+        href: https://fosstodon.org/@jonathankitt
+    right:
+      - text: Blog
+        href: blog.qmd
+      - text: Links
+        href: links.qmd
+format:
+  html:
+    theme: sandstone
+    css: styles.css
+
+
+
