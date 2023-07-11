@@ -14,6 +14,13 @@
     "text": "Hi, I am Jonathan 👋\n\nI currently work as a technician in the Genetics, Diversity and Ecophysiology of Cereals INRAE lab in Clermont-Ferrand, France.\n\n\nMy work focuses on the characterisation of bread wheat genetic diversity.\n\n\n\nWhat you’ll find on this blog\n\n➡️ Posts about R stuff\n\n\n➡️ Posts about data visualisation"
   },
   {
+    "objectID": "links.html",
+    "href": "links.html",
+    "title": "Links",
+    "section": "",
+    "text": "Books"
+  },
+  {
     "objectID": "posts/2023-06-23-datardis/index.html",
     "href": "posts/2023-06-23-datardis/index.html",
     "title": "The {datardis} package",
