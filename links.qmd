@@ -1,29 +1,8 @@
 ---
-title: "Welcome!"
-image: jk_profile.jpg
-about:
-  template: trestles
-  image-shape: round
-  image-width: 10em
-  links:
-    - icon: envelope
-      href: mailto:jonathan.kitt@proton.me
-    - icon: github
-      href: https://github.com/KittJonathan
-    - icon: twitter
-      href: https://twitter.com/KittJonathan
-    - icon: mastodon
-      href: https://fosstodon.org/@jonathankitt
+title: "Links"
+format: html
+
 ---
 
-### Hi, I am Jonathan 👋
+# Books
 
-#### I currently work as a technician in the [Genetics, Diversity and Ecophysiology of Cereals](https://www6.clermont.inrae.fr/umr1095_eng/) [INRAE](https://www.inrae.fr/en) lab in Clermont-Ferrand, France.
-
-#### My work focuses on the characterisation of bread wheat genetic diversity.
-
-### What you'll find on this [blog](blog.qmd)
-
-#### ➡️ Posts about R stuff
-
-#### ➡️ Posts about data visualisation
