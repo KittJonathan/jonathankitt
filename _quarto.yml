@@ -19,8 +19,6 @@ website:
         href: blog.qmd
       - text: Links
         href: links.qmd
-      - text: Resume
-        href: resume.html
 format:
   html:
     theme:
