@@ -1,0 +1,284 @@
+---
+title: "#TidyTuesday 2023 - Week 30"
+subtitle: "Scurvy"
+author: "Jonathan Kitt"
+date: "2023-07-28"
+draft: true
+toc: true
+categories: [R, TidyTuesday, datavis, scurvy]
+---
+
+# Introduction
+
+------------------------------------------------------------------------
+
+The [#TidyTuesday](https://github.com/rfordatascience/tidytuesday) weekly challenge is organised by the R4DS (R for Data Science) Online Learning Community.
+
+Every tuesday throughout the year, participants work on a common dataset and share the plots they create.
+
+The [dataset](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-07-25/readme.md) for this challenge comes from the [{medicaldata}](https://higgi13425.github.io/medicaldata/) R package.
+
+------------------------------------------------------------------------
+
+# Getting the data
+
+------------------------------------------------------------------------
+
+First of all, let's load the packages we'll be using :
+
+-   [{tidyverse}](https://www.tidyverse.org/) to clean the data and create the plots
+
+-   [{showtext}](https://github.com/yixuan/showtext) to change the fonts used
+
+-   [{patchwork}](https://patchwork.data-imaginist.com/) to assemble the plots
+
+If you don't have these packages installed, simply use the `install.packages()` function.
+
+```{r, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
+# Load the packages
+library(tidyverse)
+library(showtext)
+library(patchwork)
+```
+
+------------------------------------------------------------------------
+
+We can now download the dataset :
+
+```{r, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
+# Download the dataset
+scurvy <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-07-25/scurvy.csv")
+```
+
+------------------------------------------------------------------------
+
+For a quick overview of the data, we use the glimpse() function from the {dplyr} package:
+
+```{r}
+# Explore the dataset
+glimpse(scurvy)
+```
+
+The dataset has 12 observations (rows) and 8 variables (columns).
+
+Each row represents a seaman with scurvy.
+
+We find the following information in the different columns:
+
+-   the treatment and dosage received
+
+-   scores for 4 symptoms (gum rot, skin sores, weakness of the knees, lassitude)
+
+-   was the seaman fit to resume duty or not
+
+------------------------------------------------------------------------
+
+# Cleaning and preparing the data
+
+------------------------------------------------------------------------
+
+We use the following code to clean the data:
+
+```{r}
+scurvy_clean <- scurvy |>
+  # remove dosing regimen column
+  select(-dosing_regimen_for_scurvy) |>
+  # transform from wide to long format
+  pivot_longer(cols = gum_rot_d6:fit_for_duty_d6,
+               names_to = "item",
+               values_to = "value") |>
+  # separate "value" column into "score" + "grade"
+  separate(col = value,
+           into = c("score", "grade"),
+           convert = TRUE) |>
+  # remove "_d6" suffix in item column
+  # replace "_" with white spaces
+  # transform character strings into sentences
+  mutate(item = str_remove_all(item, "_d6"),
+         across(treatment:item,
+                ~str_replace_all(., pattern = "_",
+                                 replacement = " ")),
+         across(c(treatment, item, grade), 
+                ~str_to_sentence(.))) |>
+  # transform study_id into factor
+  # arrange factor levels by order of appearance
+  mutate(study_id = fct_inseq(as_factor(study_id)),
+         across(treatment:item, ~fct_inorder(.)))
+
+head(scurvy_clean)
+```
+
+------------------------------------------------------------------------
+
+We use the following code to calculate an overall improvement score:
+
+```{r}
+overall_improvement <- scurvy_clean |>
+  # remove "Fit for duty" column
+  filter(item != "Fit for duty") |>
+  # calculate total score by treatment
+  summarise(total = sum(score),
+            .by = treatment) |>
+  # calculate overall improvement score as %
+  mutate(improvement_score = 100 * (24-total) / 24) |>
+  # remove total column
+  select(-total) |> 
+  # arrange data by increasing improvement score
+  arrange(improvement_score)
+
+head(overall_improvement)
+```
+
+------------------------------------------------------------------------
+
+# Creating the plots
+
+------------------------------------------------------------------------
+
+Before creating the plots, let's import the fonts we're going to use:
+
+```{r}
+font_add_google("Roboto Condensed", "Roboto Condensed")
+font_add_google("Bangers", "Bangers")
+showtext_auto()
+```
+
+------------------------------------------------------------------------
+
+## Text
+
+We create a plot with text to explain the figure:
+
+```{r}
+(p0 <- ggplot() +
+  annotate(
+    geom = "text", x = 0, y = 6, size = 20, colour = "white",
+    hjust = 0, family = "Roboto Condensed",
+    "In 1757, the cause of scurvy was unknown ...") +
+  annotate(
+    geom = "text", x = 0, y = 4, size = 20, colour = "white",
+    hjust = 0, family = "Roboto Condensed",
+    "Aboard HMS Salisbury, the ship's surgeon, James Lind,") +
+  annotate(
+    geom = "text", x = 0, y = 3, size = 20, colour = "white",
+    hjust = 0, family = "Roboto Condensed",
+    "tested 6 different treatments in 12 seamen with") +
+  annotate(
+    geom = "text", x = 0, y = 2, size = 20, colour = "white",
+    hjust = 0, family = "Roboto Condensed",
+    "symptomatic scurvy.") +
+  annotate(
+    geom = "text", x = 0, y = 0, size = 20, colour = "white",
+    hjust = 0, family = "Roboto Condensed",
+    "After six days of therapy, he noted the severity of several") +
+  annotate(
+    geom = "text", x = 0, y = -1, size = 20, colour = "white",
+    hjust = 0, family = "Roboto Condensed",
+    "symptoms, including rotting of the gums, skin sores,") +
+  annotate(
+    geom = "text", x = 0, y = -2, size = 20, colour = "white",
+    hjust = 0, family = "Roboto Condensed",
+    "weakness of the knees, and lassitude, using a scale ranging") +
+  annotate(
+    geom = "text", x = 0, y = -3, size = 20, colour = "white",
+    hjust = 0, family = "Roboto Condensed",
+    "from 0 (none) to 3 (severe).") +
+  annotate(
+    geom = "text", x = 0, y = -5, size = 20, colour = "white",
+    hjust = 0, family = "Roboto Condensed",
+    "The figure shows the overall improvement of symptoms") +
+  annotate(
+    geom = "text", x = 0, y = -6, size = 20, colour = "white",
+    hjust = 0, family = "Roboto Condensed",
+    "in the treated seamen.") +
+  xlim(0, 10) +
+  ylim(-10, 10) +
+  theme_void() +
+  theme(
+    panel.background = element_rect(fill = "#003049",
+                                    colour  = "#003049"),
+    plot.background = element_rect(fill = "#003049",
+                                   colour  = "#003049"))
+)
+```
+
+## Viewing the overall improvement
+
+FIrst, we create data points to draw vertical bars from 0 to 100:
+
+```{r}
+# Create data points to draw bars from 0 to 100
+p1_bars <- overall_improvement |>
+  # keep treatment column
+  select(treatment) |>
+  # add a row id column named "y"
+  rowid_to_column(var = "y") |>
+  # repeat each row 101 times (0 to 100)
+  slice(rep(1:n(), each = 101)) |>
+  # add a column with positions to draw bars
+  mutate(x = rep(0:100, times = 6))
+```
+
+Then we use the same approach to create data points for the overall improvement scores:
+
+```{r}
+# Create data points to draw bars for improvement scores
+p1_values <- overall_improvement |>
+  # round improvement score %
+  mutate(improvement_score = round(improvement_score)) |>
+  # select treatment + improvement score columns
+  select(treatment, improvement_score) |>
+  # join p1_bars to get positions for bars from 0 to score
+  left_join(p1_bars) |>
+  # extract max score for each treatment
+  mutate(max_score = max(improvement_score),
+         .by = treatment) |>
+  # remove rows when x > max_score
+  filter(x <= max_score) |>
+  # order columns
+  select(y, treatment, x)
+```
+
+Let's create the background bars with all values from 0 to 100 for each one of the 6 treatments:
+
+```{r}
+(p1_bg <- ggplot() +
+    geom_segment(data = p1_bars,
+                 aes(x = x, xend = x, y = y - 0.25, yend = y + 0.25,
+                     colour = x),
+                 linewidth = 2,
+                 alpha = 0.4,
+                 show.legend = FALSE) +
+    scale_colour_gradient2(low = "#d62828",
+                           mid = "#f77f00",
+                           high = "#fcbf49",
+                           midpoint = 50) +
+    theme_void() +
+    theme(panel.background = element_rect(fill = "#003049",
+                                          colour  = "#003049"),
+          plot.background = element_rect(fill = "#003049",
+                                         colour  = "#003049"))
+)
+```
+
+Now, let(s add the values for the improvement scores to this background plot:
+
+```{r}
+(p1 <- p1_bg +
+    geom_segment(data = p1_values,
+                 aes(x = x, xend = x, y = y - 0.25, yend = y + 0.25,
+                     colour = x),
+                 linewidth = 2,
+                 show.legend = FALSE)
+)
+```
+
+Finally, we'll add labels to indicate the names of the different treatments:
+
+```{r}
+(p2 <- p1 +
+    geom_text(data = p1_values |> distinct(y, treatment),
+              aes(x = 0, y = y + 0.4, label = treatment),
+              size = 5, colour = "white", hjust = 0)
+)
+```
