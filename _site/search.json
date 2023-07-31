@@ -4,7 +4,7 @@
     "href": "blog.html",
     "title": "jonathankitt",
     "section": "",
-    "text": "The {datardis} package\n\n\nExplore the Dr Who TV series\n\n\n\n\nR\n\n\npackage\n\n\nDr Who\n\n\n\n\n\n\n\n\n\n\n\nJun 23, 2023\n\n\nJonathan Kitt\n\n\n\n\n\n\nNo matching items"
+    "text": "TidyTuesday 2023 - Week 30\n\n\nCuring scurvy\n\n\n\n\nR\n\n\nTidyTuesday\n\n\ndatavis\n\n\nscurvy\n\n\n\n\n\n\n\n\n\n\n\nJul 31, 2023\n\n\nJonathan Kitt\n\n\n\n\n\n\n  \n\n\n\n\nThe {datardis} package\n\n\nExplore the Dr Who TV series\n\n\n\n\nR\n\n\npackage\n\n\nDr Who\n\n\n\n\n\n\n\n\n\n\n\nJun 23, 2023\n\n\nJonathan Kitt\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "index.html",
@@ -47,5 +47,33 @@
     "title": "The {datardis} package",
     "section": "Who wrote the most Dr Who episodes?",
     "text": "Who wrote the most Dr Who episodes?\n\nTo find out who wrote the most Dr Who episodes, use the following code:\n\ndrwho_writers |&gt; \n  count(writer, sort = TRUE) |&gt; \n  head(5)\n\n\n\n# A tibble: 5 × 2\n  writer               n\n  &lt;chr&gt;            &lt;int&gt;\n1 Steven Moffat       45\n2 Russell T Davies    31\n3 Chris Chibnall      29\n4 Mark Gatiss          9\n5 Toby Whithouse       7"
+  },
+  {
+    "objectID": "posts/2023-07-31-tt-scurvy/index.html",
+    "href": "posts/2023-07-31-tt-scurvy/index.html",
+    "title": "#TidyTuesday 2023 - Week 30",
+    "section": "",
+    "text": "The #TidyTuesday weekly challenge is organised by the R4DS (R for Data Science) Online Learning Community.\nEvery tuesday throughout the year, participants work on a common dataset and share the plots they create.\nThe dataset for this challenge comes from the {medicaldata} R package."
+  },
+  {
+    "objectID": "posts/2023-07-31-tt-scurvy/index.html#text",
+    "href": "posts/2023-07-31-tt-scurvy/index.html#text",
+    "title": "#TidyTuesday 2023 - Week 30",
+    "section": "Text",
+    "text": "Text\n\nFirst we create a table for the text to be displayed:\n\n# Create table with text and x/y positions for plot\np_text &lt;- tibble(\n  x = 0,\n  y = c(6, 4:2, 0:-3, -5, -6),\n  text = c(\"In 1757, the cause of scurvy was unknown ...\",\n           \"Aboard HMS Salisbury, the ship's surgeon, James Lind,\",\n           \"tested 6 different treatments in 12 seamen with\",\n           \"symptomatic scurvy.\",\n           \"After six days of therapy, he noted the severity of several\",\n           \"symptoms, including rotting of the gums, skin sores,\",\n           \"weakness of the knees, and lassitude, using a scale ranging\",\n           \"from 0 (none) to 3 (severe).\",\n           \"The figure shows overall improvement of symptoms in the\",\n           \"treated seamen.\"\n           )\n  )\n\nWe then create a first plot with the text:\n\n# Create p0 plot with text\np0 &lt;- ggplot() +\n  geom_text(data = p_text,\n            aes(x = x, y = y, label = text),\n            family = \"Roboto Condensed\", colour = \"white\", hjust = 0, size = 18) +\n  xlim(0, 10) +\n  ylim(-10, 10) +\n  labs(title = \"Curing scurvy\") +\n  theme_void() +\n  theme(panel.background = element_rect(fill = \"#003049\", color  = \"#003049\"),\n        plot.background = element_rect(fill = \"#003049\", color  = \"#003049\"),\n        plot.title = element_text(family = \"Bangers\", colour = \"white\",\n                                  size = 100, hjust = 0.5, margin = margin(t = 20)))"
+  },
+  {
+    "objectID": "posts/2023-07-31-tt-scurvy/index.html#improvement-scores",
+    "href": "posts/2023-07-31-tt-scurvy/index.html#improvement-scores",
+    "title": "#TidyTuesday 2023 - Week 30",
+    "section": "Improvement scores",
+    "text": "Improvement scores\n\nWe represent the overall improvement scores as percentages using coloured bars.\nFirst, we create data points to draw bars ranging from 0 to 100:\n\n# Create data points to draw bars from 0 to 100\np1_bars &lt;- overall_improvement |&gt;\n  # keep treatment column\n  select(treatment) |&gt;\n  # add a row id column named \"y\"\n  rowid_to_column(var = \"y\") |&gt;\n  # repeat each row 101 times (0 to 100)\n  slice(rep(1:n(), each = 101)) |&gt;\n  # add a column with positions to draw bars (for each of the 6 treatments)\n  mutate(x = rep(0:100, times = 6))\n\n\nThen we create data points to represent the actual improvement scores:\n\n# Create data points to draw bars for improvement scores\np1_values &lt;- overall_improvement |&gt;\n  # round improvement score %\n  mutate(improvement_score = round(improvement_score)) |&gt;\n  # select treatment + improvement score columns\n  select(treatment, improvement_score) |&gt;\n  # join p1_bars to get positions for bars from 0 to score\n  left_join(p1_bars) |&gt;\n  # extract max score for each treatment\n  mutate(max_score = max(improvement_score),\n         .by = treatment) |&gt;\n  # remove rows when x &gt; max_score\n  filter(x &lt;= max_score) |&gt;\n  # order columns\n  select(y, treatment, x)\n\n\nFinally, we create the plot:\n\n# Create data points to draw bars for improvement scores\np1 &lt;- ggplot() +\n  geom_segment(data = p1_bars,\n               aes(x = x, xend = x,\n                   y = y - 0.25, yend = y + 0.25,\n                   colour = x),\n               linewidth = 1, alpha = 0.4,\n               show.legend = FALSE) +\n  geom_segment(data = p1_values,\n               aes(x = x, xend = x,\n                   y = y - 0.25, yend = y + 0.25,\n                   colour = x),\n               linewidth = 1,\n               show.legend = FALSE) +\n  geom_text(data = p1_values |&gt; distinct(y, treatment),\n            aes(x = 0, y = y + 0.4, label = treatment),\n            size = 15, colour = \"white\", hjust = 0,\n            family = \"Roboto Condensed\") +\n  scale_colour_gradient2(low = \"#d62828\", mid = \"#f77f00\", high = \"#fcbf49\",\n                         midpoint = 50) +\n  theme_void() +\n  theme(panel.background = element_rect(fill = \"#003049\", color  = \"#003049\"),\n        plot.background = element_rect(fill = \"#003049\", color  = \"#003049\"))"
+  },
+  {
+    "objectID": "posts/2023-07-31-tt-scurvy/index.html#assembling-the-plots",
+    "href": "posts/2023-07-31-tt-scurvy/index.html#assembling-the-plots",
+    "title": "#TidyTuesday 2023 - Week 30",
+    "section": "Assembling the plots",
+    "text": "Assembling the plots\n\nWe use the {patchwork} package to assemble the two plots, add some caption text, and export to .png format:\n\n# Assemble the two plots\np &lt;- p0 + p1 +\n  plot_annotation(\n    caption = \"#TidyTuesday 2023 week 30 | Data from {medicaldata} | Jonathan Kitt\",\n    theme = theme(\n      panel.background = element_rect(fill = \"#003049\", color  = \"#003049\"),\n      plot.background = element_rect(fill = \"#003049\", color  = \"#003049\"),\n      plot.caption = element_text(colour = \"white\", hjust = 0.5, size = 30,\n                                  family = \"Roboto Condensed\")\n      )\n    )\n\n# Export to png\nggsave(\"figs/tt_2023_w30_scurvy.png\", p, dpi = 320, width = 12, height = 6)\n\n\nAnd here’s the result!"
   }
 ]
