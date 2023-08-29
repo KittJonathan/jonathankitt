@@ -1,0 +1,174 @@
+---
+title: "#TidyTuesday 2023 - Week 35"
+subtitle: "Fair use"
+author: "Jonathan Kitt"
+date: "2023-08-29"
+image: img/tt_2023_w35_fair_use.png
+toc: true
+categories: [R, TidyTuesday, datavis, Fair use]
+---
+
+Thanls to [Dan Oehm](http://gradientdescending.com/) for sharing his tips on addind icons in the script titles!
+
+# Introduction
+
+<br>
+
+The [#TidyTuesday](https://github.com/rfordatascience/tidytuesday) weekly challenge is organised by the R4DS (R for Data Science) Online Learning Community.
+
+Every tuesday throughout the year, participants work on a common dataset and share the plots they create.
+
+The [dataset](https://github.com/rfordatascience/tidytuesday/tree/master/data/2023/2023-08-29) for this challenge comes from the [U.S. Copyright Office Fair Use Index](https://www.copyright.gov/fair-use/fair-index.html).
+
+<br>
+
+# Getting the data
+
+<br>
+
+First of all, let's load the packages we'll be using :
+
+-   [{tidyverse}](https://www.tidyverse.org/) to clean the data and create the plots
+
+-   [{showtext}](https://github.com/yixuan/showtext) to change the fonts used
+
+-   [{ggtext}](https://wilkelab.org/ggtext/) to use colours in the title
+
+If you don't have these packages installed, simply use the `install.packages()` function.
+
+```{r, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE}
+# 📦 Load packages ----
+
+library(tidyverse)
+library(showtext)
+library(ggtext)
+```
+
+<br>
+
+We also load the fonts we will use in the plots: [**Bebas Neue**](https://fonts.google.com/specimen/Bebas+Neue?query=bebas+) for the text and [**Londrina Shadow**](https://fonts.google.com/specimen/Londrina+Shadow?query=londrina+sha) for the title.
+
+```{r, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE}
+# 🔤 Import fonts ----
+
+font_add_google("Roboto Condensed", "Roboto Condensed")
+showtext_auto()
+```
+
+<br>
+
+We can now download the dataset :
+
+```{r, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE}
+# ⬇️ Import the dataset ----
+
+fair_use_cases <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-08-29/fair_use_cases.csv")
+```
+
+<br>
+
+The dataset has **251 observations** (rows) and **7 variables** (columns).
+
+<br>
+
+# Cleaning the data
+
+<br>
+
+We use the following code to clean the data:
+
+```{r, echo=TRUE, eval=FALSE, warning=FALSE, message=FALSE}
+# 🧹  Clean the data ----
+
+d <- fair_use_cases |>
+  # keep years 2013-2022
+  filter(year >= 2013) |>
+  # count number of found/not found cases per year
+  count(year, fair_use_found) |>
+  # repeat each row n times (n = nb of occurences)
+  uncount(n) |>
+  # create a row index
+  mutate(case_id = 1:n(), .by = c(year, fair_use_found)) |>
+  # use negative values for "not found" cases
+  mutate(y = case_when(fair_use_found == TRUE ~ case_id,
+                       TRUE ~ -case_id))
+```
+
+<br>
+
+# Creating the plot
+
+<br>
+
+We use the following code to create the plot:
+
+```{r, echo=TRUE, eval=FALSE, warning=FALSE, message=FALSE}
+p <- ggplot(data = d) +
+  geom_point(aes(x = year, y = y,
+                 colour = fair_use_found),
+             shape = 21, size = 6,
+             show.legend = FALSE) +
+  geom_text(aes(x = year, y = y,
+                colour = fair_use_found),
+            label = "C",
+            family = "Roboto Condensed", size = 12,
+            show.legend = FALSE) +
+  geom_text(aes(x = year, y = 0, label = year),
+            family = "Roboto Condensed", size = 15,
+            colour = "white") +
+  scale_colour_manual(values = c("#fd574a", "#2eed91")) +
+  labs(title = "Number of fair use court cases in the U.S. (2013-2022)",
+       subtitle = "Colours indicate whether fair use was<span style='color:#2eed91;'> found</span> or <span style='color:#fd574a;'>not found</span> by the court",
+       caption = "#TidyTuesday 2023 week 35 | Data from the U.S. Copyright Office Fair Use Index | Jonathan Kitt") +
+  theme_void() +
+  theme(panel.background = element_rect(fill = "black", colour = "black"),
+        plot.background = element_rect(fill = "black", colour = "black"),
+        plot.title = element_markdown(family = "Roboto Condensed",
+                                      colour = "white", size = 75,
+                                      margin = margin(t = 20, l = 20)),
+        plot.subtitle = element_markdown(family = "Roboto Condensed",
+                                         colour = "white", size = 50,
+                                         margin = margin(t= 5, l = 20)),
+        plot.caption = element_text(family = "Roboto Condensed",
+                                    colour = "white", size = 30,
+                                    hjust = 0.5, margin = margin(t = 10, b = 10)))
+
+```
+
+<br>
+
+We now create the second plot:
+
+```{r, echo=TRUE, eval=FALSE, warning=FALSE, message=FALSE}
+# ✏️ Create the plot ----
+
+p2 <- ggplot() +
+  geom_rect(data = p2_scores,
+             aes(xmin = x - 0.85, xmax = x + 0.85,
+                 ymin = 0, ymax = total_thsd),
+            fill = "#edeb00") +
+  geom_text(data = p2_scores,
+            aes(x = x, y = total_thsd - 160, label = total_thsd),
+            family = "Bebas Neue", colour = "black", size = 18) +
+  geom_text(data = p2_x_labels,
+            aes(x = x, y = y, label = label),
+            family = "Bebas Neue", colour = "white", size = 18) +
+  geom_text(data = p2_text,
+            aes(x = x, y = y, label = label),
+            family = "Bebas Neue", colour = "white", size = 20,
+            hjust = 0) +
+  xlim(-1, 46) +
+  theme_void() +
+  theme(panel.background = element_rect(fill = "black"),
+        plot.background = element_rect(fill = "black"))
+
+# 💾 Export plot ----
+
+ggsave("figs/tt_2023_w35_fair_use.png", p, dpi = 320, width = 12, height = 6)
+```
+
+<br>
+
+And here's the result!
+
+![](img/tt_2023_w35_fair_use.png)
