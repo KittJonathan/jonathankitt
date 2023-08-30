@@ -3,9 +3,12 @@ project:
 
 website:
   title: "Jonathan Kitt"
+  site-url: "https://jonathankitt.netlify.app/"
   description: "My personal blog about coding with R"
   navbar:
     left: 
+      - icon: rss
+        href: blog.xml
       - icon: envelope
         href: mailto:jonathan.kitt@proton.me
       - icon: github
