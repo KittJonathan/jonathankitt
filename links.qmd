@@ -1,8 +1,6 @@
 ---
 title: "Links"
 format: html
-
 ---
 
-# Books
-
+[R bloggers](r-bloggers.com)
