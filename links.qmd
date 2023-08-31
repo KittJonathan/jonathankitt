@@ -3,4 +3,4 @@ title: "Links"
 format: html
 ---
 
-[R bloggers](r-bloggers.com)
+[R bloggers](https://www.r-bloggers.com)
