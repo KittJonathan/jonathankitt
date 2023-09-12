@@ -10,7 +10,705 @@
 <atom:link href="https://jonathankitt.netlify.app/blog.xml" rel="self" type="application/rss+xml"/>
 <description>My personal blog about coding with R</description>
 <generator>quarto-1.3.353</generator>
-<lastBuildDate>Mon, 28 Aug 2023 22:00:00 GMT</lastBuildDate>
+<lastBuildDate>Mon, 11 Sep 2023 22:00:00 GMT</lastBuildDate>
+<item>
+  <title>#TidyTuesday 2023 - Week 37</title>
+  <dc:creator>Jonathan Kitt</dc:creator>
+  <link>https://jonathankitt.netlify.app/posts/2023-09-12-tt-global-human-day/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p><br></p>
+<p>The <a href="https://github.com/rfordatascience/tidytuesday">#TidyTuesday</a> weekly challenge is organised by the R4DS (R for Data Science) Online Learning Community.</p>
+<p>Every tuesday throughout the year, participants work on a common dataset and share the plots they create.</p>
+<p>The <a href="https://github.com/rfordatascience/tidytuesday/tree/master/data/2023/2023-09-12">dataset</a> for this challenge comes from the <a href="https://www.humanchronome.org/">Human Chronome Project</a>.</p>
+<p><br></p>
+</section>
+<section id="getting-the-data" class="level1">
+<h1>Getting the data</h1>
+<p><br></p>
+<p>First of all, let’s load the packages we’ll be using :</p>
+<ul>
+<li><p><a href="https://www.tidyverse.org/">{tidyverse}</a> to clean the data and create the plots</p></li>
+<li><p><a href="https://github.com/yixuan/showtext">{showtext}</a> to change the fonts used</p></li>
+<li><p><a href="https://wilkelab.org/ggtext/">{</a><a href="https://patchwork.data-imaginist.com/">patchwork</a><a href="https://wilkelab.org/ggtext/">}</a> to assemble the plots</p></li>
+</ul>
+<p>If you don’t have these packages installed, simply use the <code>install.packages()</code> function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># 📦 Load packages ----</span></span>
+<span id="cb1-2"></span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(tidyverse)</span>
+<span id="cb1-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(showtext)</span>
+<span id="cb1-5"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(patchwork)</span></code></pre></div>
+</div>
+<p><br></p>
+<p>We also load the fonts we will use in the plots.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># 🔤 Import fonts ----</span></span>
+<span id="cb2-2"></span>
+<span id="cb2-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">font_add_google</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Roboto Condensed"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Roboto Condensed"</span>)</span>
+<span id="cb2-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">showtext_auto</span>()</span></code></pre></div>
+</div>
+<p><br></p>
+<p>We can now download the dataset :</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># ⬇️ Import the dataset ----</span></span>
+<span id="cb3-2">all_countries <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> readr<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">read_csv</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-09-12/all_countries.csv"</span>)</span>
+<span id="cb3-3">global_human_day <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> readr<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">read_csv</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-09-12/global_human_day.csv"</span>)</span></code></pre></div>
+</div>
+<p><br></p>
+</section>
+<section id="cleaning-the-data" class="level1">
+<h1>Cleaning the data</h1>
+<p><br></p>
+<p>We use the following code to clean the data:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># 🧹  Clean the data ----</span></span>
+<span id="cb4-2"></span>
+<span id="cb4-3">categories <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> all_countries <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb4-4">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># extract unique values</span></span>
+<span id="cb4-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">distinct</span>(Category, Subcategory)</span>
+<span id="cb4-6"></span>
+<span id="cb4-7">d <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> global_human_day <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb4-8">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># join the categories</span></span>
+<span id="cb4-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">left_join</span>(categories) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb4-10">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># select columns</span></span>
+<span id="cb4-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">select</span>(Category, hoursPerDay) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb4-12">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># add hours per category</span></span>
+<span id="cb4-13">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summarise</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">total =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sum</span>(hoursPerDay), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.by =</span> Category) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb4-14">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># arrange by decreasing amount of time</span></span>
+<span id="cb4-15">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">arrange</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>total) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb4-16">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># split the total column into two values</span></span>
+<span id="cb4-17">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">separate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">col =</span> total, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">into =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"h"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"m"</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">remove =</span> F) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb4-18">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># transform the trailing hours value into minutes</span></span>
+<span id="cb4-19">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">m =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">round</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as.numeric</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">paste0</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"0."</span>, m)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">60</span>),</span>
+<span id="cb4-20">         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">h =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as.numeric</span>(h)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb4-21">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># create labels for plots</span></span>
+<span id="cb4-22">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">duration =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">case_when</span>(h <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">paste0</span>(m, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"m"</span>),</span>
+<span id="cb4-23">                              <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">paste0</span>(h, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"h "</span>, m, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"m"</span>))) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb4-24">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># select columns</span></span>
+<span id="cb4-25">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">select</span>(Category, total, duration)</span></code></pre></div>
+</div>
+<p><br></p>
+</section>
+<section id="creating-the-plot" class="level1">
+<h1>Creating the plot</h1>
+<p><br></p>
+<p>First we create a custom function to generate one plot per category :</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">plot_hm <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(data, row) {</span>
+<span id="cb5-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-3">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_rect</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xmin =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xmax =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>,</span>
+<span id="cb5-4">                  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ymin =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ymax =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">24</span>),</span>
+<span id="cb5-5">              <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">colour =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#7e38b7"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#7e38b7"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-6">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_rect</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">slice</span>(data, row),</span>
+<span id="cb5-7">              <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xmin =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xmax =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>,</span>
+<span id="cb5-8">                  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ymin =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ymax =</span> total),</span>
+<span id="cb5-9">              <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">colour =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#9c89ff"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#9c89ff"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-10">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">coord_polar</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">theta =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"y"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-11">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">xlim</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.05</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-12">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> d<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>Category[row]) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-13">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">annotate</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"text"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.05</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>,</span>
+<span id="cb5-14">             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label =</span> d<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>duration[row],</span>
+<span id="cb5-15">             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">family =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Roboto Condensed"</span>,</span>
+<span id="cb5-16">             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">colour =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#c4feff"</span>,</span>
+<span id="cb5-17">             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">25</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-18">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_void</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-19">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">panel.background =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_rect</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#541675"</span>,</span>
+<span id="cb5-20">                                          <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">colour =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>),</span>
+<span id="cb5-21">          <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">plot.background =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_rect</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#541675"</span>,</span>
+<span id="cb5-22">                                         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">colour =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>),</span>
+<span id="cb5-23">          <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">plot.title =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">family =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Roboto Condensed"</span>,</span>
+<span id="cb5-24">                                    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">colour =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#c4feff"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">40</span>,</span>
+<span id="cb5-25">                                    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">hjust =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>,</span>
+<span id="cb5-26">                                    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">margin =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">margin</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">b =</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>)))</span>
+<span id="cb5-27">}</span></code></pre></div>
+</div>
+<p><br></p>
+<p>We use the following code to create and assemble the plots and export the final figure :</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create the plots</span></span>
+<span id="cb6-2">p1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot_hm</span>(d, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb6-3">p2 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot_hm</span>(d, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)</span>
+<span id="cb6-4">p3 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot_hm</span>(d, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>)</span>
+<span id="cb6-5">p4 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot_hm</span>(d, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>)</span>
+<span id="cb6-6">p5 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot_hm</span>(d, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>)</span>
+<span id="cb6-7">p6 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot_hm</span>(d, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span>)</span>
+<span id="cb6-8">p7 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot_hm</span>(d, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">7</span>)</span>
+<span id="cb6-9">p8 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot_hm</span>(d, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8</span>)</span>
+<span id="cb6-10"></span>
+<span id="cb6-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Assemble the plots</span></span>
+<span id="cb6-12">p <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> (p1 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> p2 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> p3 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> p4 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> p5 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> p6 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> p7 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> p8) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-13">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot_layout</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ncol =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-14">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot_annotation</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"How humans spend their day time"</span>,</span>
+<span id="cb6-15">                  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">caption =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#TidyTuesday 2023 week 37 | Data from the Human Chronome Project | Jonathan Kitt"</span>,</span>
+<span id="cb6-16">                  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">theme =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">panel.background =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_rect</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#541675"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">colour =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>),</span>
+<span id="cb6-17">                                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">plot.background =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_rect</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#541675"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">colour =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>),</span>
+<span id="cb6-18">                                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">plot.title =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">family =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Roboto Condensed"</span>,</span>
+<span id="cb6-19">                                                            <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">colour =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#c4feff"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>,</span>
+<span id="cb6-20">                                                            <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">hjust =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">margin =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">margin</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">t =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">b =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">25</span>)),</span>
+<span id="cb6-21">                                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">plot.caption =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">family =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Roboto Condensed"</span>,</span>
+<span id="cb6-22">                                                            <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">colour =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"white"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">hjust =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>)))</span>
+<span id="cb6-23"></span>
+<span id="cb6-24"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Export the plot</span></span>
+<span id="cb6-25"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggsave</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"figs/tt_2023_w37_global_human_day.png"</span>, p, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">dpi =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">320</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">width =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">height =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span>)</span></code></pre></div>
+</div>
+<p><br></p>
+<p>We now create the second plot:</p>
+<p><br></p>
+<p>And here’s the result!</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://jonathankitt.netlify.app/posts/2023-09-12-tt-global-human-day/img/tt_2023_w37_global_human_day.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+
+
+</section>
+
+ ]]></description>
+  <category>R</category>
+  <category>TidyTuesday</category>
+  <category>datavis</category>
+  <category>Global Human Day</category>
+  <guid>https://jonathankitt.netlify.app/posts/2023-09-12-tt-global-human-day/index.html</guid>
+  <pubDate>Mon, 11 Sep 2023 22:00:00 GMT</pubDate>
+  <media:content url="https://jonathankitt.netlify.app/posts/2023-09-12-tt-global-human-day/img/tt_2023_w37_global_human_day.png" medium="image" type="image/png" height="72" width="144"/>
+</item>
 <item>
   <title>#TidyTuesday 2023 - Week 35</title>
   <dc:creator>Jonathan Kitt</dc:creator>
