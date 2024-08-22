@@ -3,7 +3,7 @@ title: "{datardis} package v.0.0.5"
 subtitle: "Explore the latest Dr Who episodes"
 author: "Jonathan Kitt"
 date: "2024-08-22"
-image: img/datardis_hex.png
+image: img/datardis.png
 toc: true
 categories: [R, Package, Dr Who]
 ---
