@@ -12,55 +12,57 @@ categories: [R, Package, Dr Who]
 
 <br>
 
-The [#TidyTuesday](https://github.com/rfordatascience/tidytuesday) weekly challenge is organised by the R4DS (R for Data Science) Online Learning Community.
+The [{datardis}](https://github.com/KittJonathan/datardis) package includes datasets which provide lists of episodes for the Doctor Who and Torchwood TV series.
 
-Every tuesday throughout the year, participants work on a common dataset and share the plots they create.
+The latest version of the package ([v.0.0.5](https://cran.r-project.org/web/packages/datardis/index.html)) includes the latest episodes :
 
-The [dataset](https://github.com/rfordatascience/tidytuesday/tree/master/data/2023/2023-09-12) for this challenge comes from the [Human Chronome Project](https://www.humanchronome.org/).
+- 2023 specials  
+- Series 14 (2024)
 
 <br>
 
-# Getting the data
+# Installing the package
+
+<br>
+
+To install the latest version of the package, use the following command:  
+
+```{r, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE}
+
+# 🔽 INSTALL THE PACKAGE --------------------------------------------------
+
+install.packages("datardis")
+```
+
+<br>
+
+Alternatively, you can install the package from GitHub using {devtools} :
+
+```{r, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE}
+devtools::install_github("KittJonathan/datardis")
+```
+
+<br>
+
+# Loading the packages
 
 <br>
 
 First of all, let's load the packages we'll be using :
 
+-   [{datardis}](https://github.com/KittJonathan/datardis)
+
 -   [{tidyverse}](https://www.tidyverse.org/) to clean the data and create the plots
 
--   [{showtext}](https://github.com/yixuan/showtext) to change the fonts used
+If you don't have the {tidyverse} installed, simply use the `install.packages("tidyverse")` function.
 
--   [{](https://wilkelab.org/ggtext/)[patchwork](https://patchwork.data-imaginist.com/)[}](https://wilkelab.org/ggtext/) to assemble the plots
+<br>
 
-If you don't have these packages installed, simply use the `install.packages()` function.
-
-```{r, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE}
-# 📦 Load packages ----
+```{r, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
+# 📦 LOAD THE PACKAGES ----------------------------------------------------
 
 library(tidyverse)
-library(showtext)
-library(patchwork)
-```
-
-<br>
-
-We also load the fonts we will use in the plots.
-
-```{r, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE}
-# 🔤 Import fonts ----
-
-font_add_google("Roboto Condensed", "Roboto Condensed")
-showtext_auto()
-```
-
-<br>
-
-We can now download the dataset :
-
-```{r, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE}
-# ⬇️ Import the dataset ----
-all_countries <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-09-12/all_countries.csv")
-global_human_day <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-09-12/global_human_day.csv")
+library(datardis)
 ```
 
 <br>

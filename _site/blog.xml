@@ -24,78 +24,64 @@
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
 <p><br></p>
-<p>The <a href="https://github.com/rfordatascience/tidytuesday">#TidyTuesday</a> weekly challenge is organised by the R4DS (R for Data Science) Online Learning Community.</p>
-<p>Every tuesday throughout the year, participants work on a common dataset and share the plots they create.</p>
-<p>The <a href="https://github.com/rfordatascience/tidytuesday/tree/master/data/2023/2023-09-12">dataset</a> for this challenge comes from the <a href="https://www.humanchronome.org/">Human Chronome Project</a>.</p>
+<p>The <a href="https://github.com/KittJonathan/datardis">{datardis}</a> package includes datasets which provide lists of episodes for the Doctor Who and Torchwood TV series.</p>
+<p>The latest version of the package (<a href="https://cran.r-project.org/web/packages/datardis/index.html">v.0.0.5</a>) includes the latest episodes :</p>
+<ul>
+<li>2023 specials<br>
+</li>
+<li>Series 14 (2024)</li>
+</ul>
 <p><br></p>
 </section>
-<section id="getting-the-data" class="level1">
-<h1>Getting the data</h1>
+<section id="installing-the-package" class="level1">
+<h1>Installing the package</h1>
 <p><br></p>
-<p>First of all, let’s load the packages we’ll be using :</p>
-<ul>
-<li><p><a href="https://www.tidyverse.org/">{tidyverse}</a> to clean the data and create the plots</p></li>
-<li><p><a href="https://github.com/yixuan/showtext">{showtext}</a> to change the fonts used</p></li>
-<li><p><a href="https://wilkelab.org/ggtext/">{</a><a href="https://patchwork.data-imaginist.com/">patchwork</a><a href="https://wilkelab.org/ggtext/">}</a> to assemble the plots</p></li>
-</ul>
-<p>If you don’t have these packages installed, simply use the <code>install.packages()</code> function.</p>
+<p>To install the latest version of the package, use the following command:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;"># 📦 Load packages ----</span></span>
+font-style: inherit;"># 🔽 INSTALL THE PACKAGE --------------------------------------------------</span></span>
 <span id="cb1-2"></span>
 <span id="cb1-3"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">library</span>(tidyverse)</span>
-<span id="cb1-4"><span class="fu" style="color: #4758AB;
+font-style: inherit;">install.packages</span>(<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">library</span>(showtext)</span>
-<span id="cb1-5"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(patchwork)</span></code></pre></div>
+font-style: inherit;">"datardis"</span>)</span></code></pre></div>
 </div>
 <p><br></p>
-<p>We also load the fonts we will use in the plots.</p>
+<p>Alternatively, you can install the package from GitHub using {devtools} :</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">devtools<span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;"># 🔤 Import fonts ----</span></span>
-<span id="cb2-2"></span>
-<span id="cb2-3"><span class="fu" style="color: #4758AB;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">font_add_google</span>(<span class="st" style="color: #20794D;
+font-style: inherit;">install_github</span>(<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"Roboto Condensed"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Roboto Condensed"</span>)</span>
-<span id="cb2-4"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">showtext_auto</span>()</span></code></pre></div>
+font-style: inherit;">"KittJonathan/datardis"</span>)</span></code></pre></div>
 </div>
 <p><br></p>
-<p>We can now download the dataset :</p>
+</section>
+<section id="loading-the-packages" class="level1">
+<h1>Loading the packages</h1>
+<p><br></p>
+<p>First of all, let’s load the packages we’ll be using :</p>
+<ul>
+<li><p><a href="https://github.com/KittJonathan/datardis">{datardis}</a></p></li>
+<li><p><a href="https://www.tidyverse.org/">{tidyverse}</a> to clean the data and create the plots</p></li>
+</ul>
+<p>If you don’t have the {tidyverse} installed, simply use the <code>install.packages("tidyverse")</code> function.</p>
+<p><br></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;"># ⬇️ Import the dataset ----</span></span>
-<span id="cb3-2">all_countries <span class="ot" style="color: #003B4F;
+font-style: inherit;"># 📦 LOAD THE PACKAGES ----------------------------------------------------</span></span>
+<span id="cb3-2"></span>
+<span id="cb3-3"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">&lt;-</span> readr<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">library</span>(tidyverse)</span>
+<span id="cb3-4"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">read_csv</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-09-12/all_countries.csv"</span>)</span>
-<span id="cb3-3">global_human_day <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> readr<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">read_csv</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-09-12/global_human_day.csv"</span>)</span></code></pre></div>
+font-style: inherit;">library</span>(datardis)</span></code></pre></div>
 </div>
 <p><br></p>
 </section>

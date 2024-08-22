@@ -218,7 +218,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
-  <li><a href="#getting-the-data" id="toc-getting-the-data" class="nav-link" data-scroll-target="#getting-the-data">Getting the data</a></li>
+  <li><a href="#installing-the-package" id="toc-installing-the-package" class="nav-link" data-scroll-target="#installing-the-package">Installing the package</a></li>
+  <li><a href="#loading-the-packages" id="toc-loading-the-packages" class="nav-link" data-scroll-target="#loading-the-packages">Loading the packages</a></li>
   <li><a href="#cleaning-the-data" id="toc-cleaning-the-data" class="nav-link" data-scroll-target="#cleaning-the-data">Cleaning the data</a></li>
   <li><a href="#creating-the-plot" id="toc-creating-the-plot" class="nav-link" data-scroll-target="#creating-the-plot">Creating the plot</a></li>
   </ul>
@@ -234,42 +235,46 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
 <p><br></p>
-<p>The <a href="https://github.com/rfordatascience/tidytuesday">#TidyTuesday</a> weekly challenge is organised by the R4DS (R for Data Science) Online Learning Community.</p>
-<p>Every tuesday throughout the year, participants work on a common dataset and share the plots they create.</p>
-<p>The <a href="https://github.com/rfordatascience/tidytuesday/tree/master/data/2023/2023-09-12">dataset</a> for this challenge comes from the <a href="https://www.humanchronome.org/">Human Chronome Project</a>.</p>
+<p>The <a href="https://github.com/KittJonathan/datardis">{datardis}</a> package includes datasets which provide lists of episodes for the Doctor Who and Torchwood TV series.</p>
+<p>The latest version of the package (<a href="https://cran.r-project.org/web/packages/datardis/index.html">v.0.0.5</a>) includes the latest episodes :</p>
+<ul>
+<li>2023 specials<br>
+</li>
+<li>Series 14 (2024)</li>
+</ul>
 <p><br></p>
 </section>
-<section id="getting-the-data" class="level1">
-<h1>Getting the data</h1>
+<section id="installing-the-package" class="level1">
+<h1>Installing the package</h1>
+<p><br></p>
+<p>To install the latest version of the package, use the following command:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 🔽 INSTALL THE PACKAGE --------------------------------------------------</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"datardis"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+<p>Alternatively, you can install the package from GitHub using {devtools} :</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"KittJonathan/datardis"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+</section>
+<section id="loading-the-packages" class="level1">
+<h1>Loading the packages</h1>
 <p><br></p>
 <p>First of all, let’s load the packages we’ll be using :</p>
 <ul>
+<li><p><a href="https://github.com/KittJonathan/datardis">{datardis}</a></p></li>
 <li><p><a href="https://www.tidyverse.org/">{tidyverse}</a> to clean the data and create the plots</p></li>
-<li><p><a href="https://github.com/yixuan/showtext">{showtext}</a> to change the fonts used</p></li>
-<li><p><a href="https://wilkelab.org/ggtext/">{</a><a href="https://patchwork.data-imaginist.com/">patchwork</a><a href="https://wilkelab.org/ggtext/">}</a> to assemble the plots</p></li>
 </ul>
-<p>If you don’t have these packages installed, simply use the <code>install.packages()</code> function.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 📦 Load packages ----</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(showtext)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<p>If you don’t have the {tidyverse} installed, simply use the <code>install.packages("tidyverse")</code> function.</p>
 <p><br></p>
-<p>We also load the fonts we will use in the plots.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 🔤 Import fonts ----</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">font_add_google</span>(<span class="st">"Roboto Condensed"</span>, <span class="st">"Roboto Condensed"</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">showtext_auto</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p><br></p>
-<p>We can now download the dataset :</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ⬇️ Import the dataset ----</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>all_countries <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">"https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-09-12/all_countries.csv"</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>global_human_day <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">"https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-09-12/global_human_day.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 📦 LOAD THE PACKAGES ----------------------------------------------------</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(datardis)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><br></p>
 </section>
