@@ -1,39 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://jonathankitt.netlify.app/blog.html</loc>
-    <lastmod>2023-09-12T14:58:40.076Z</lastmod>
-  </url>
-  <url>
-    <loc>https://jonathankitt.netlify.app/index.html</loc>
-    <lastmod>2023-09-12T14:57:59.400Z</lastmod>
-  </url>
-  <url>
-    <loc>https://jonathankitt.netlify.app/links.html</loc>
-    <lastmod>2023-09-12T14:58:00.956Z</lastmod>
-  </url>
-  <url>
-    <loc>https://jonathankitt.netlify.app/posts/2023-06-23-datardis/index.html</loc>
-    <lastmod>2023-09-12T14:58:02.742Z</lastmod>
-  </url>
-  <url>
-    <loc>https://jonathankitt.netlify.app/posts/2023-07-31-tt-scurvy/index.html</loc>
-    <lastmod>2023-09-12T14:58:04.907Z</lastmod>
-  </url>
-  <url>
-    <loc>https://jonathankitt.netlify.app/posts/2023-08-04-tt-us/index.html</loc>
-    <lastmod>2023-09-12T14:58:06.860Z</lastmod>
-  </url>
-  <url>
-    <loc>https://jonathankitt.netlify.app/posts/2023-08-10-tt-hot-ones/index.html</loc>
-    <lastmod>2023-09-12T14:58:08.849Z</lastmod>
+    <loc>https://jonathankitt.netlify.app/posts/2024-08-22-datardis-0-0-5/index.html</loc>
+    <lastmod>2024-08-22T05:34:45.076Z</lastmod>
   </url>
   <url>
     <loc>https://jonathankitt.netlify.app/posts/2023-08-29-tt-fair-use/index.html</loc>
-    <lastmod>2023-09-12T14:58:11.016Z</lastmod>
+    <lastmod>2023-08-29T12:30:30.000Z</lastmod>
+  </url>
+  <url>
+    <loc>https://jonathankitt.netlify.app/posts/2023-08-04-tt-us/index.html</loc>
+    <lastmod>2023-08-04T12:45:02.000Z</lastmod>
+  </url>
+  <url>
+    <loc>https://jonathankitt.netlify.app/posts/2023-06-23-datardis/index.html</loc>
+    <lastmod>2023-07-11T07:29:12.000Z</lastmod>
+  </url>
+  <url>
+    <loc>https://jonathankitt.netlify.app/index.html</loc>
+    <lastmod>2023-08-30T06:54:22.000Z</lastmod>
+  </url>
+  <url>
+    <loc>https://jonathankitt.netlify.app/blog.html</loc>
+    <lastmod>2023-08-30T06:54:34.000Z</lastmod>
+  </url>
+  <url>
+    <loc>https://jonathankitt.netlify.app/links.html</loc>
+    <lastmod>2023-08-31T08:10:36.000Z</lastmod>
+  </url>
+  <url>
+    <loc>https://jonathankitt.netlify.app/posts/2023-07-31-tt-scurvy/index.html</loc>
+    <lastmod>2023-07-31T09:17:00.000Z</lastmod>
+  </url>
+  <url>
+    <loc>https://jonathankitt.netlify.app/posts/2023-08-10-tt-hot-ones/index.html</loc>
+    <lastmod>2023-08-10T08:41:08.000Z</lastmod>
   </url>
   <url>
     <loc>https://jonathankitt.netlify.app/posts/2023-09-12-tt-global-human-day/index.html</loc>
-    <lastmod>2023-09-12T14:58:12.921Z</lastmod>
+    <lastmod>2023-09-12T14:57:52.000Z</lastmod>
   </url>
 </urlset>
