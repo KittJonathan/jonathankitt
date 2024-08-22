@@ -3,7 +3,7 @@ title: "{datardis} package v.0.0.5"
 subtitle: "Explore the latest Dr Who episodes"
 author: "Jonathan Kitt"
 date: "2024-08-22"
-image: img/datardis.png
+image: img/plot.png
 toc: true
 categories: [R, Package, Dr Who]
 ---
@@ -16,8 +16,8 @@ The [{datardis}](https://github.com/KittJonathan/datardis) package includes data
 
 The latest version of the package ([v.0.0.5](https://cran.r-project.org/web/packages/datardis/index.html)) includes the latest episodes :
 
-- 2023 specials  
-- Series 14 (2024)
+-   2023 specials\
+-   Series 14 (2024)
 
 <br>
 
@@ -25,7 +25,7 @@ The latest version of the package ([v.0.0.5](https://cran.r-project.org/web/pack
 
 <br>
 
-To install the latest version of the package, use the following command:  
+To install the latest version of the package, use the following command:
 
 ```{r, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE}
 
@@ -54,7 +54,9 @@ First of all, let's load the packages we'll be using :
 
 -   [{tidyverse}](https://www.tidyverse.org/) to clean the data and create the plots
 
-If you don't have the {tidyverse} installed, simply use the `install.packages("tidyverse")` function.
+-   [{showtext}](https://github.com/yixuan/showtext) to add custom fonts
+
+If you don't have the packages installed, simply use the `install.packages("...")` function.
 
 <br>
 
@@ -62,6 +64,7 @@ If you don't have the {tidyverse} installed, simply use the `install.packages("t
 # 📦 LOAD THE PACKAGES ----------------------------------------------------
 
 library(tidyverse)
+library(showtext)
 library(datardis)
 ```
 
@@ -73,32 +76,18 @@ library(datardis)
 
 We use the following code to clean the data:
 
-```{r, echo=TRUE, eval=FALSE, warning=FALSE, message=FALSE}
+```{r, echo=TRUE, eval=TRUE, warning=FALSE, message=FALSE}
 # 🧹  Clean the data ----
 
-categories <- all_countries |>
-  # extract unique values
-  distinct(Category, Subcategory)
+d <- drwho_episodes |> 
+  filter(year(first_aired) >= 2023) |> 
+  select(episode_number, type, episode_title, first_aired, uk_viewers, duration) |> 
+  mutate(uk_viewers = as.numeric(uk_viewers),
+         episode_title = case_when(type == "special" ~ paste0(episode_title, " *"),
+                                   .default = episode_title),
+         episode_title = fct_rev(fct_inorder(episode_title)))
 
-d <- global_human_day |>
-  # join the categories
-  left_join(categories) |>
-  # select columns
-  select(Category, hoursPerDay) |>
-  # add hours per category
-  summarise(total = sum(hoursPerDay), .by = Category) |>
-  # arrange by decreasing amount of time
-  arrange(-total) |>
-  # split the total column into two values
-  separate(col = total, into = c("h", "m"), remove = F) |>
-  # transform the trailing hours value into minutes
-  mutate(m = round(as.numeric(paste0("0.", m)) * 60),
-         h = as.numeric(h)) |>
-  # create labels for plots
-  mutate(duration = case_when(h == 0 ~ paste0(m, "m"),
-                              TRUE ~ paste0(h, "h ", m, "m"))) |>
-  # select columns
-  select(Category, total, duration)
+d
 ```
 
 <br>
@@ -107,76 +96,68 @@ d <- global_human_day |>
 
 <br>
 
-First we create a custom function to generate one plot per category :
+We use the following code to create the plot :
 
-```{r, echo=TRUE, eval=FALSE, warning=FALSE, message=FALSE}
-plot_hm <- function(data, row) {
+```{r, echo=TRUE, eval=TRUE, warning=FALSE, message=FALSE}
+# 📊 CREATE THE PLOT ------------------------------------------------------
+
+p <- d |> 
   ggplot() +
-    geom_rect(aes(xmin = 3, xmax = 4,
-                  ymin = 0, ymax = 24),
-              colour = "#7e38b7", fill = "#7e38b7") +
-    geom_rect(data = slice(data, row),
-              aes(xmin = 3, xmax = 4,
-                  ymin = 0, ymax = total),
-              colour = "#9c89ff", fill = "#9c89ff") +
-    coord_polar(theta = "y") +
-    xlim(c(0.05, 4)) +
-    labs(title = d$Category[row]) +
-    annotate("text", x = 0.05, y = 0,
-             label = d$duration[row],
-             family = "Roboto Condensed",
-             colour = "#c4feff",
-             size = 25) +
-    theme_void() +
-    theme(panel.background = element_rect(fill = "#541675",
-                                          colour = NA),
-          plot.background = element_rect(fill = "#541675",
-                                         colour = NA),
-          plot.title = element_text(family = "Roboto Condensed",
-                                    colour = "#c4feff", size = 40,
-                                    hjust = 0.5,
-                                    margin = margin(b = -10)))
-}
+  geom_segment(aes(x = 0, xend = uk_viewers,
+                   y = episode_title, yend = episode_title),
+               colour = "#a6b8c7") +
+  geom_point(aes(x = uk_viewers, y = episode_title),
+             shape = 21, size = 10, fill = "#00203c", colour = "#a6b8c7") +
+  geom_text(aes(x = uk_viewers, y = episode_title, label = uk_viewers),
+            hjust = 0.5, family = "Roboto Condensed", size = 10, colour = "white") +
+  geom_text(aes(x = 0, y = episode_title, label = episode_title),
+            hjust = 0, vjust = -0.5, family = "Roboto Condensed",
+            size = 14, colour = "white") +
+  geom_segment(aes(x = -0.25, xend = -0.25, y = 9.75, yend = 12.25),
+               colour = "#a6b8c7", linewidth = 1) +
+  geom_segment(aes(x = -0.25, xend = -0.25, y = 0.75, yend = 9.25),
+              colour = "#a6b8c7", linewidth = 1) +
+  geom_text(aes(x = -0.5, y = 11, label = "2023 specials"),
+            hjust = 0.5, family = "Roboto Condensed", size = 18, colour = "white",
+            angle = 90) +
+  geom_text(aes(x = -0.5, y = 5, label = "14th series"),
+            hjust = 0.5, family = "Roboto Condensed", size = 18, colour = "white",
+            angle = 90) +
+  labs(title = "Number of UK viewers of Doctor Who episodes (in millions)",
+       subtitle = "Special episodes are noted with a *") +
+  theme_minimal() +
+  theme(axis.title = element_blank(),
+        axis.text = element_blank(),
+        panel.background = element_rect(colour = "#00203c",
+                                        fill = "#00203c"),
+        panel.grid = element_blank(),
+        plot.background = element_rect(colour = "#00203c",
+                                       fill = "#00203c"),
+        plot.title = element_text(family = "Roboto Condensed",
+                                  colour = "white", size = 50, hjust = 0.5,
+                                  margin = margin(t = 5, b = 5)),
+        plot.subtitle = element_text(family = "Roboto Condensed",
+                                  colour = "white", size = 30, hjust = 0.5))
 ```
 
 <br>
 
-We use the following code to create and assemble the plots and export the final figure :
+# Save the plot
+
+<br>
+
+We use the following code to export the plot to a `.png` file :
 
 ```{r, echo=TRUE, eval=FALSE, warning=FALSE, message=FALSE}
-# Create the plots
-p1 <- plot_hm(d, 1)
-p2 <- plot_hm(d, 2)
-p3 <- plot_hm(d, 3)
-p4 <- plot_hm(d, 4)
-p5 <- plot_hm(d, 5)
-p6 <- plot_hm(d, 6)
-p7 <- plot_hm(d, 7)
-p8 <- plot_hm(d, 8)
+# 💾 EXPORT THE PLOT ------------------------------------------------------
 
-# Assemble the plots
-p <- (p1 + p2 + p3 + p4 + p5 + p6 + p7 + p8) +
-  plot_layout(ncol = 4) +
-  plot_annotation(title = "How humans spend their day time",
-                  caption = "#TidyTuesday 2023 week 37 | Data from the Human Chronome Project | Jonathan Kitt",
-                  theme = theme(panel.background = element_rect(fill = "#541675", colour = NA),
-                                plot.background = element_rect(fill = "#541675", colour = NA),
-                                plot.title = element_text(family = "Roboto Condensed",
-                                                            colour = "#c4feff", size = 100,
-                                                            hjust = 0.5, margin = margin(t = 5, b = 25)),
-                                plot.caption = element_text(family = "Roboto Condensed",
-                                                            colour = "white", size = 30, hjust = 0.5)))
+ggsave("img/drwho_viewers.png", p,
+       dpi = 320, width = 12, height = 6)
 
-# Export the plot
-ggsave("figs/tt_2023_w37_global_human_day.png", p, dpi = 320, width = 12, height = 6)
 ```
-
-<br>
-
-We now create the second plot:
 
 <br>
 
 And here's the result!
 
-![](img/tt_2023_w37_global_human_day.png){fig-align="center"}
+![](img/plot.png){fig-align="center"}
