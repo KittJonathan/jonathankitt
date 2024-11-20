@@ -1,0 +1,160 @@
+---
+title: "Vendée Globe 2024"
+subtitle: "Mapping the skippers"
+author: "Jonathan Kitt"
+date: "2024-11-20"
+image: 20241120_060000.png
+toc: true
+categories: [R, Vendée Globe, Map]
+---
+
+# Introduction
+
+The [Vendée Globe 2024](https://www.vendeeglobe.org/) is well under way!
+
+<br>
+
+I wanted to see if I could try a map of the skippers with R.
+
+Follow this tutorial if you'd like to try it for yourself!
+
+<br>
+
+# Getting the data
+
+<br>
+
+The skipper's standings and coordinates (among other data) are updated every four hours on the race's website.
+
+You can download the datasets [here](https://www.vendeeglobe.org/classement).
+
+I cleaned the different datasets and created a "global" dataset, which can be [downloaded here](https://github.com/KittJonathan/VENDEE_GLOBE/blob/main/03-DATA_PROCESSED/clean_data.csv).
+
+<br>
+
+We start our script by loading the packages we'll be using:
+
+-   [{tidyverse}](https://www.tidyverse.org/) to clean the data and create the plots
+
+-   [{readxl}](https://readxl.tidyverse.org/) to import the Excel sheets containing the data
+
+-   [{showtext}](https://github.com/yixuan/showtext) to change the fonts used
+
+-   [{parzer}](https://docs.ropensci.org/parzer/) to convert coordinates
+
+If you don't have these packages installed, simply use the `install.packages()` function.
+
+```{r, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(readxl)
+library(showtext)
+library(parzer)
+```
+
+<br>
+
+We also load the fonts we will use in the plots: **Roboto Condensed**.
+
+```{r, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
+# Import the fonts
+font_add_google("Roboto Condensed", "Roboto Condensed")
+showtext_auto()
+```
+
+<br>
+
+We can now import the clean dataset :
+
+```{r, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
+# Download the dataset
+df <- readr::read_csv("clean_data.csv")
+```
+
+<br>
+
+For a quick overview of the data, we use the `glimpse()` function from the [{dplyr}](https://dplyr.tidyverse.org/) package:
+
+```{r}
+# Explore the dataset
+glimpse(df)
+```
+
+<br>
+
+# Cleaning the data
+
+<br>
+
+We use the following code to parse the coordinates:
+
+```{r, echo=TRUE, eval=TRUE, warning=FALSE, message=FALSE}
+df <- df |> 
+  mutate(lon = parzer::parse_lon(Longitude),
+         lat = parzer::parse_lat(Latitude))
+```
+
+<br>
+
+# Creating the map
+
+<br>
+
+## World map
+
+<br>
+
+First we get the data for the world map:
+
+```{r, echo=TRUE, eval=TRUE, warning=FALSE, message=FALSE}
+world <- map_data("world")
+```
+
+<br>
+
+## Skippers
+
+<br>
+
+We then create a simple map with the latest standings:
+
+```{r, echo=TRUE, eval=FALSE, warning=FALSE, message=FALSE}
+ggplot() +
+  geom_polygon(data = world, aes(x = long, y = lat, group = group),
+               fill = "#afcfdf") +
+  geom_point(data = filter(df, Date == 20241120, Time == "060000"),
+             aes(x = lon, y = lat),
+             col = "white", size = 0.8) +
+  coord_fixed(ratio = 1.3, xlim = c(-35, 0), ylim = c(5, 30)) +
+  labs(title = "Vendée Globe 2024",
+       subtitle = "2024-11-20 6:00") +
+  theme_void() +
+  theme(panel.background = element_rect(colour = "#485fb0",
+                                        fill = "#485fb0"),
+        plot.background = element_rect(colour = "#485fb0",
+                                        fill = "#485fb0"),
+        # plot.margin = margin(t = -50, r = -150),
+        plot.title = element_text(colour = "white",
+                                  family = "Roboto Condensed",
+                                  size = 20, hjust = 0.5),
+        plot.subtitle = element_text(colour = "white",
+                                     family = "Roboto Condensed",
+                                     size = 15, hjust = 0.5))
+```
+
+<br>
+
+## Save map
+
+<br>
+
+We now save the map :
+
+```{r, echo=TRUE, eval=FALSE, warning=FALSE, message=FALSE}
+ggsave("20241120_060000.png", p, dpi = 320, width = 6, height = 6)
+```
+
+<br>
+
+And here's the result:
+
+![](20241120_060000.png){fig-align="center"}
