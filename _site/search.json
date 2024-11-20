@@ -4,28 +4,28 @@
     "href": "posts/2024-11-20-vendee-globe/index.html",
     "title": "Vendée Globe 2024",
     "section": "",
-    "text": "The #TidyTuesday weekly challenge is organised by the R4DS (R for Data Science) Online Learning Community.\nEvery tuesday throughout the year, participants work on a common dataset and share the plots they create.\nThe dataset for this challenge comes from the {medicaldata} R package."
+    "text": "The Vendée Globe 2024 is well under way!\n\nI wanted to see if I could try a map of the skippers with R.\nFollow this tutorial if you’d like to try it for yourself!"
   },
   {
-    "objectID": "posts/2024-11-20-vendee-globe/index.html#text",
-    "href": "posts/2024-11-20-vendee-globe/index.html#text",
+    "objectID": "posts/2024-11-20-vendee-globe/index.html#world-map",
+    "href": "posts/2024-11-20-vendee-globe/index.html#world-map",
     "title": "Vendée Globe 2024",
-    "section": "Text",
-    "text": "Text\n\nFirst we create a table for the text to be displayed:\n\n# Create table with text and x/y positions for plot\np_text &lt;- tibble(\n  x = 0,\n  y = c(6, 4:2, 0:-3, -5, -6),\n  text = c(\"In 1757, the cause of scurvy was unknown ...\",\n           \"Aboard HMS Salisbury, the ship's surgeon, James Lind,\",\n           \"tested 6 different treatments in 12 seamen with\",\n           \"symptomatic scurvy.\",\n           \"After six days of therapy, he noted the severity of several\",\n           \"symptoms, including rotting of the gums, skin sores,\",\n           \"weakness of the knees, and lassitude, using a scale ranging\",\n           \"from 0 (none) to 3 (severe).\",\n           \"The figure shows overall improvement of symptoms in the\",\n           \"treated seamen.\"\n           )\n  )\n\nWe then create a first plot with the text:\n\n# Create p0 plot with text\np0 &lt;- ggplot() +\n  geom_text(data = p_text,\n            aes(x = x, y = y, label = text),\n            family = \"Roboto Condensed\", colour = \"white\", hjust = 0, size = 18) +\n  xlim(0, 10) +\n  ylim(-10, 10) +\n  labs(title = \"Curing scurvy\") +\n  theme_void() +\n  theme(panel.background = element_rect(fill = \"#003049\", color  = \"#003049\"),\n        plot.background = element_rect(fill = \"#003049\", color  = \"#003049\"),\n        plot.title = element_text(family = \"Bangers\", colour = \"white\",\n                                  size = 100, hjust = 0.5, margin = margin(t = 20)))"
+    "section": "World map",
+    "text": "World map\n\nFirst we get the data for the world map:\n\nworld &lt;- map_data(\"world\")"
   },
   {
-    "objectID": "posts/2024-11-20-vendee-globe/index.html#improvement-scores",
-    "href": "posts/2024-11-20-vendee-globe/index.html#improvement-scores",
+    "objectID": "posts/2024-11-20-vendee-globe/index.html#skippers",
+    "href": "posts/2024-11-20-vendee-globe/index.html#skippers",
     "title": "Vendée Globe 2024",
-    "section": "Improvement scores",
-    "text": "Improvement scores\n\nWe represent the overall improvement scores as percentages using coloured bars.\nFirst, we create data points to draw bars ranging from 0 to 100:\n\n# Create data points to draw bars from 0 to 100\np1_bars &lt;- overall_improvement |&gt;\n  # keep treatment column\n  select(treatment) |&gt;\n  # add a row id column named \"y\"\n  rowid_to_column(var = \"y\") |&gt;\n  # repeat each row 101 times (0 to 100)\n  slice(rep(1:n(), each = 101)) |&gt;\n  # add a column with positions to draw bars (for each of the 6 treatments)\n  mutate(x = rep(0:100, times = 6))\n\n\nThen we create data points to represent the actual improvement scores:\n\n# Create data points to draw bars for improvement scores\np1_values &lt;- overall_improvement |&gt;\n  # round improvement score %\n  mutate(improvement_score = round(improvement_score)) |&gt;\n  # select treatment + improvement score columns\n  select(treatment, improvement_score) |&gt;\n  # join p1_bars to get positions for bars from 0 to score\n  left_join(p1_bars) |&gt;\n  # extract max score for each treatment\n  mutate(max_score = max(improvement_score),\n         .by = treatment) |&gt;\n  # remove rows when x &gt; max_score\n  filter(x &lt;= max_score) |&gt;\n  # order columns\n  select(y, treatment, x)\n\n\nFinally, we create the plot:\n\n# Create data points to draw bars for improvement scores\np1 &lt;- ggplot() +\n  geom_segment(data = p1_bars,\n               aes(x = x, xend = x,\n                   y = y - 0.25, yend = y + 0.25,\n                   colour = x),\n               linewidth = 1, alpha = 0.4,\n               show.legend = FALSE) +\n  geom_segment(data = p1_values,\n               aes(x = x, xend = x,\n                   y = y - 0.25, yend = y + 0.25,\n                   colour = x),\n               linewidth = 1,\n               show.legend = FALSE) +\n  geom_text(data = p1_values |&gt; distinct(y, treatment),\n            aes(x = 0, y = y + 0.4, label = treatment),\n            size = 15, colour = \"white\", hjust = 0,\n            family = \"Roboto Condensed\") +\n  scale_colour_gradient2(low = \"#d62828\", mid = \"#f77f00\", high = \"#fcbf49\",\n                         midpoint = 50) +\n  theme_void() +\n  theme(panel.background = element_rect(fill = \"#003049\", color  = \"#003049\"),\n        plot.background = element_rect(fill = \"#003049\", color  = \"#003049\"))"
+    "section": "Skippers",
+    "text": "Skippers\n\nWe then create a simple map with the latest standings:\n\nggplot() +\n  geom_polygon(data = world, aes(x = long, y = lat, group = group),\n               fill = \"#afcfdf\") +\n  geom_point(data = filter(df, Date == 20241120, Time == \"060000\"),\n             aes(x = lon, y = lat),\n             col = \"white\", size = 0.8) +\n  coord_fixed(ratio = 1.3, xlim = c(-35, 0), ylim = c(5, 30)) +\n  labs(title = \"Vendée Globe 2024\",\n       subtitle = \"2024-11-20 6:00\") +\n  theme_void() +\n  theme(panel.background = element_rect(colour = \"#485fb0\",\n                                        fill = \"#485fb0\"),\n        plot.background = element_rect(colour = \"#485fb0\",\n                                        fill = \"#485fb0\"),\n        # plot.margin = margin(t = -50, r = -150),\n        plot.title = element_text(colour = \"white\",\n                                  family = \"Roboto Condensed\",\n                                  size = 20, hjust = 0.5),\n        plot.subtitle = element_text(colour = \"white\",\n                                     family = \"Roboto Condensed\",\n                                     size = 15, hjust = 0.5))"
   },
   {
-    "objectID": "posts/2024-11-20-vendee-globe/index.html#assembling-the-plots",
-    "href": "posts/2024-11-20-vendee-globe/index.html#assembling-the-plots",
+    "objectID": "posts/2024-11-20-vendee-globe/index.html#save-map",
+    "href": "posts/2024-11-20-vendee-globe/index.html#save-map",
     "title": "Vendée Globe 2024",
-    "section": "Assembling the plots",
-    "text": "Assembling the plots\n\nWe use the {patchwork} package to assemble the two plots, add some caption text, and export to .png format:\n\n# Assemble the two plots\np &lt;- p0 + p1 +\n  plot_annotation(\n    caption = \"#TidyTuesday 2023 week 30 | Data from {medicaldata} | Jonathan Kitt\",\n    theme = theme(\n      panel.background = element_rect(fill = \"#003049\", color  = \"#003049\"),\n      plot.background = element_rect(fill = \"#003049\", color  = \"#003049\"),\n      plot.caption = element_text(colour = \"white\", hjust = 0.5, size = 30,\n                                  family = \"Roboto Condensed\")\n      )\n    )\n\n# Export to png\nggsave(\"tt_2023_w30_scurvy.png\", p, dpi = 320, width = 12, height = 6)\n\n\nAnd here’s the result!"
+    "section": "Save map",
+    "text": "Save map\n\nWe now save the map :\n\nggsave(\"20241120_060000.png\", p, dpi = 320, width = 6, height = 6)\n\n\nAnd here’s the result:"
   },
   {
     "objectID": "posts/2023-09-12-tt-global-human-day/index.html",
