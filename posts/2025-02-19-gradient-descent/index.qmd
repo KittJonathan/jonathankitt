@@ -1,0 +1,9 @@
+---
+title: "Gradient descent"
+subtitle: "Optimizing parameters"
+author: "Jonathan Kitt"
+date: "2025-02-19"
+toc: true
+draft: true
+categories: [R, Linear Regression, Gradient descent]
+---

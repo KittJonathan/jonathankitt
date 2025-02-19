@@ -10,7 +10,18 @@
 <atom:link href="https://jonathankitt.netlify.app/blog.xml" rel="self" type="application/rss+xml"/>
 <description>My personal blog about coding with R</description>
 <generator>quarto-1.5.57</generator>
-<lastBuildDate>Tue, 19 Nov 2024 23:00:00 GMT</lastBuildDate>
+<lastBuildDate>Tue, 18 Feb 2025 23:00:00 GMT</lastBuildDate>
+<item>
+  <title></title>
+  <dc:creator>Jonathan Kitt</dc:creator>
+  <link>https://jonathankitt.netlify.app/posts/2025-02-19-gradient-descent/</link>
+  <description><![CDATA[ undefined ]]></description>
+  <category>R</category>
+  <category>Linear Regression</category>
+  <category>Gradient descent</category>
+  <guid>https://jonathankitt.netlify.app/posts/2025-02-19-gradient-descent/</guid>
+  <pubDate>Tue, 18 Feb 2025 23:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Vendée Globe 2024</title>
   <dc:creator>Jonathan Kitt</dc:creator>
